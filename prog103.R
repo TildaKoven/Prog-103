@@ -74,16 +74,15 @@ hours_extreme_per_day
 # lets you switch between extreme heat and cold exposure.
 extreme_hours_day <- function(site, season, hotcold) {
   if (hotcold == "cold") {
-  n_extreme <- sum(kefj_site == site &
-                  kefj_season == season &
-                  kefj_temperature <= -4 &
-                  kefj_exposure == "air")
-  } else if (hotcold == "hot") {
-    n_extreme <- sum(kefj_site == site &
-                       kefj_season == season &
-                       kefj_temperature >= 25 &
-                       kefj_exposure == "air")
+    is_extreme <- kefj_temperature <= -4
+  } else  {
+    is_extreme <- kefj_temperature >= 25
+
   }
+  n_extreme <- sum(kefj_site == site &
+                     kefj_season == season &
+                     is_extreme &
+                     kefj_exposure == "air")
   n_total <- sum(kefj_site == site &
                    kefj_season == season)
   hours_extreme <- n_extreme * 30 / 60
@@ -91,7 +90,7 @@ extreme_hours_day <- function(site, season, hotcold) {
   hours_extreme_per_day <- hours_extreme / days_total
   return(hours_extreme_per_day)
 }
-extreme_hours_day("Nuka_Pass", "Summer", "hot")
+extreme_hours_day("Nuka_Pass", "Summer", "cold")
 # Season to taste ---------------------------------------------------------
 
 # P7 What seasons are in the kefj dataset? What function would you use to
@@ -150,6 +149,7 @@ for (season in seasons) {
 # "McCarty Spring 0 0.00218579234972678"
 # "Nuka_Bay Spring 0 0.00441361916771753"
 # "Nuka_Pass Spring 0.00819672131147541 0.00109289617486339"
+
 # P10 Examine your results from P9. You should find two outputs where both
 # extreme heat and cold exposure were 0. What season were they in?
 #They were both in Fall
